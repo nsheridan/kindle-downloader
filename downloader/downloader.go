@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"strings"
 	"sync"
 	"time"
 
@@ -184,7 +185,8 @@ func (d *Downloader) downloadSingle(book api_response.ContentItem, device api_re
 		return fmt.Errorf("Failed to download file: %w", err)
 	}
 	defer resp.Body.Close()
-	filename := path.Join(d.Destination, book.Title+".azw3")
+	escTitle := strings.ReplaceAll(book.Title, string(os.PathSeparator), "_")
+	filename := path.Join(d.Destination, escTitle+".azw3")
 	out, err := os.Create(filename)
 	if err != nil {
 		return fmt.Errorf("Failed to open file %s for writing: %w", filename, err)
